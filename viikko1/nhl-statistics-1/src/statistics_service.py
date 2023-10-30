@@ -1,8 +1,7 @@
+from sort_by import SortBy
 
-
-def sort_by_points(player):
-    return player.points
-
+#def sort_by_points(player):
+#    return player.points
 
 class StatisticsService:
     def __init__(self,reader):
@@ -25,11 +24,24 @@ class StatisticsService:
 
         return list(players_of_team)
 
-    def top(self, how_many):
+    def top(self, how_many, sort_by=None):
+
+        sort_methods = {
+            SortBy.POINTS: lambda player: player.points,
+            SortBy.GOALS: lambda player: player.goals,
+            SortBy.ASSISTS: lambda player: player.assists,
+        }
+
+        if sort_by in sort_methods:
+            sort_method = sort_methods[sort_by]
+        else:
+            sort_method = lambda player: player.points
+
+
         sorted_players = sorted(
             self._players,
             reverse=True,
-            key=sort_by_points
+            key=sort_method
         )
 
         result = []
