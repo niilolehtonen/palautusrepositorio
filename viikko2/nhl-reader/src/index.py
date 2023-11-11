@@ -17,7 +17,9 @@ def main():
     print("Players from FIN")
     print('')
 
-    for player in players:
+    sorted_players = sorted(players, key=lambda x: x.points, reverse=True)
+
+    for player in sorted_players:
         if player.nation == 'FIN':
             print(player)
 
