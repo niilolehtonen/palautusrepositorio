@@ -8,31 +8,50 @@ class Komento(Enum):
     NOLLAUS = 3
     KUMOA = 4
 
-class Summa:
-
-    def __init__(self,syöte,sovelluslogiikka,lue_syote):
-        self._syote_kentta = syöte
+class KomennonSuorittaja:
+    def __init__(self,sovelluslogiikka, lue_syote):
         self._sovelluslogiikka = sovelluslogiikka
         self._lue_syote = lue_syote
 
-class Erotus:
+class Summa(KomennonSuorittaja):
 
-    def __init__(self,syöte,sovelluslogiikka,lue_syote):
-        self._syote_kentta = syöte
-        self._sovelluslogiikka = sovelluslogiikka
-        self._lue_syote = lue_syote
+    def suorita(self):
+        self._edellinen = self._sovelluslogiikka.arvo()
+        arvo = int(self._lue_syote())
+        self._sovellus.plus(arvo)
 
-class Nollaus:
+    def kumoa(self):
+        self._sovellus.aseta_arvo(self._edellinen)
 
-    def __init__(self,syöte,sovelluslogiikka,lue_syote):
-        self._syote_kentta = syöte
-        self._sovelluslogiikka = sovelluslogiikka
-        self._lue_syote = lue_syote
+class Erotus(KomennonSuorittaja):
+
+    def suorita(self):
+        self._edellinen = self._sovelluslogiikka.arvo()
+        arvo = int(self._lue_syote())
+        self._sovellus.miinus(arvo)
+    
+    def kumoa(self):
+        self._sovellus.aseta_arvo(self._edellinen)
+
+class Nollaus(KomennonSuorittaja):
+
+    def suorita(self):
+        self._edellinen = self._sovelluslogiikka.arvo()
+        self._sovellus.nollaa()
+    
+    def kumoa(self):
+        self._sovellus.aseta_arvo(self._edellinen)
 
 class Kumoa:
 
-    def __init__(self,syöte,sovelluslogiikka,lue_syote):
-        pass
+    def __init__(self,sovelluslogiikka,edellinen):
+        self._sovelluslogiikka = sovelluslogiikka
+        self._edellinen = edellinen
+    
+    def suorita(self):
+        if not self._edellinen():
+            return
+        self._edellinen().kumoa()
 
 class Kayttoliittyma:
     def __init__(self, sovelluslogiikka, root):
@@ -91,6 +110,7 @@ class Kayttoliittyma:
     def _suorita_komento(self, komento):
         komento_olio = self._komennot[komento]
         komento_olio.suorita()
+        self._aseta_aikaisempi(komento_olio)
         self._kumoa_painike["state"] = constants.NORMAL
 
         if self._sovelluslogiikka.arvo() == 0:
