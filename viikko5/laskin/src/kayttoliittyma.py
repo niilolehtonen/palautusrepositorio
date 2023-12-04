@@ -64,8 +64,6 @@ class Kayttoliittyma:
             Komento.KUMOA: Kumoa(sovelluslogiikka, self._lue_syote) # ei ehkä tarvita täällä...
         }
 
-    def _lue_syote(self):
-        return self._syote_kentta.get()
 
     def kaynnista(self):
         self._arvo_var = StringVar()
@@ -106,6 +104,15 @@ class Kayttoliittyma:
         erotus_painike.grid(row=2, column=1)
         self._nollaus_painike.grid(row=2, column=2)
         self._kumoa_painike.grid(row=2, column=3)
+
+    def _lue_syote(self):
+        return self._syote_kentta.get()
+
+    def _hae_aikaisempi(self):
+        return self._edellinen
+
+    def _aseta_aikaisempi(self,arvo):
+        self._edellinen = arvo
 
     def _suorita_komento(self, komento):
         komento_olio = self._komennot[komento]
